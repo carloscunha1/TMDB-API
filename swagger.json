@@ -1,0 +1,197 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0.0",
+      "title": "API de Filmes TMDB",
+      "description": "API para gerenciar filmes consumindo a API pública TMDB"
+    },
+    "host": "localhost:3000",
+    "basePath": "/",
+    "schemes": ["http"],
+    "paths": {
+      "/filme": {
+        "post": {
+          "summary": "Adiciona um filme à lista de desejos",
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "required": true,
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer", "example": 550 }
+                }
+              }
+            }
+          ],
+          "responses": {
+            "200": { "description": "Filme adicionado com sucesso" },
+            "404": { "description": "Filme não encontrado na API externa" }
+          }
+        },
+        "get": {
+          "summary": "Lista todos os filmes na lista de desejos",
+          "responses": {
+            "200": {
+              "description": "Lista de filmes",
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Filme"
+                }
+              }
+            }
+          }
+        }
+      },
+      "/filme/{id}": {
+        "get": {
+          "summary": "Retorna detalhes de um filme específico",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Detalhes do filme",
+              "schema": { "$ref": "#/definitions/Filme" }
+            },
+            "404": { "description": "Filme não encontrado" }
+          }
+        }
+      },
+      "/filme/{id}/estado": {
+        "put": {
+          "summary": "Move o filme para um novo estado",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "in": "body",
+              "name": "body",
+              "required": true,
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "estado": { "type": "string", "example": "assistido" }
+                }
+              }
+            }
+          ],
+          "responses": {
+            "200": { "description": "Filme movido para o novo estado" },
+            "500": { "description": "Erro ao atualizar estado do filme" }
+          }
+        }
+      },
+      "/filme/{id}/avaliar": {
+        "post": {
+          "summary": "Avalia o filme com uma nota de 0 a 5",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "in": "body",
+              "name": "body",
+              "required": true,
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nota": { "type": "integer", "minimum": 0, "maximum": 5, "example": 4 }
+                }
+              }
+            }
+          ],
+          "responses": {
+            "200": { "description": "Filme avaliado com sucesso" },
+            "400": { "description": "Nota deve ser entre 0 e 5" },
+            "500": { "description": "Erro ao avaliar o filme" }
+          }
+        }
+      },
+      "/filme/{id}/historico": {
+        "get": {
+          "summary": "Retorna o histórico completo de um filme",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Histórico de ações do filme",
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Historico"
+                }
+              }
+            }
+          }
+        }
+      },
+      "/logs": {
+        "get": {
+          "summary": "Retorna todos os logs registrados",
+          "responses": {
+            "200": {
+              "description": "Lista de logs",
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Log"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "definitions": {
+      "Filme": {
+        "type": "object",
+        "properties": {
+          "uuid": { "type": "string", "example": "123e4567-e89b-12d3-a456-426614174000" },
+          "titulo": { "type": "string", "example": "Clube da Luta" },
+          "sinopse": { "type": "string", "example": "Um homem insone conhece um vendedor de sabão peculiar e forma um clube secreto de luta." },
+          "ano_lancamento": { "type": "integer", "example": 1999 },
+          "genero": { "type": "string", "example": "Drama" },
+          "estado": { "type": "string", "example": "para assistir" }
+        }
+      },
+      "Historico": {
+        "type": "object",
+        "properties": {
+          "uuid_filme": { "type": "string", "example": "123e4567-e89b-12d3-a456-426614174000" },
+          "acao": { "type": "string", "example": "avaliado com nota 5" },
+          "timestamp": { "type": "string", "example": "2025-02-03T12:34:56Z" }
+        }
+      },
+      "Log": {
+        "type": "object",
+        "properties": {
+          "method": { "type": "string", "example": "GET" },
+          "url": { "type": "string", "example": "/filme" },
+          "status": { "type": "integer", "example": 200 },
+          "timestamp": { "type": "string", "example": "2025-02-03T12:34:56Z" }
+        }
+      }
+    }
+  }
+  
