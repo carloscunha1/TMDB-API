@@ -68,7 +68,7 @@ export const detalhesFilme = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const [rows] = await pool.query('SELECT * FROM filmes WHERE id_tmdb = ?', [id]);
+    const [rows] = await pool.query('SELECT * FROM filmes WHERE uuid = ?', [id]);
     if (rows.length === 0) {
       await registrarLog('GET', `/filme/${id}`, 404);
       return res.status(404).json({ error: 'Filme não encontrado' });
